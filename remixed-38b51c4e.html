@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa Conhecimento de Valor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0D1B2A; --navy-mid: #1A2E45;
+    --gold: #C9A84C; --gold-light: #E8C97A;
+    --cream: #F7F3EE; --cream-dark: #EDE8E0;
+    --text: #1A1A2E; --text-muted: #6B6B7B; --white: #FFFFFF;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+  /* NAV */
+  .sticky-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,27,42,0.96); backdrop-filter: blur(8px);
+    padding: 14px 32px; display: flex; justify-content: space-between; align-items: center;
+    transform: translateY(-100%); transition: transform 0.4s ease;
+  }
+  .sticky-nav.visible { transform: translateY(0); }
+  .sticky-logo { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--gold); }
+  .sticky-cta { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); background: var(--gold); padding: 10px 24px; text-decoration: none; transition: background 0.2s; }
+  .sticky-cta:hover { background: var(--gold-light); }
+
+  /* HERO */
+  .hero {
+    background: var(--navy); min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 80px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, rgba(201,168,76,0.14) 0%, transparent 65%),
+                radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.07) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 28px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+  .hero-headline { font-family: 'Playfair Display', serif; font-size: clamp(36px, 5.5vw, 70px); font-weight: 900; line-height: 1.08; color: var(--white); max-width: 880px; margin: 0 auto 28px; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+  .hero-headline em { font-style: italic; color: var(--gold-light); }
+  .hero-sub { font-size: clamp(17px, 2vw, 21px); font-weight: 300; color: rgba(255,255,255,0.65); max-width: 620px; margin: 0 auto 52px; line-height: 1.75; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+  .hero-cta { opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+  .hero-scroll { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 0.8s 1.2s forwards; }
+  .hero-scroll span { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+  .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent); animation: scrollPulse 2s infinite; }
+
+  /* BUTTONS */
+  .btn-primary { display: inline-block; background: var(--gold); color: var(--navy); font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 18px 48px; border: none; cursor: pointer; text-decoration: none; transition: background 0.25s, transform 0.2s; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-ghost { display: inline-block; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); font-size: 14px; padding: 14px 36px; text-decoration: none; transition: border-color 0.25s, color 0.25s; margin-left: 16px; }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* SHARED */
+  .section-inner { max-width: 900px; margin: 0 auto; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 46px); font-weight: 700; line-height: 1.2; color: var(--navy); margin-bottom: 24px; }
+  .section-title.light { color: var(--white); }
+  .gold-divider { width: 48px; height: 2px; background: var(--gold); margin: 0 0 32px; }
+
+  /* DORES */
+  .pain-section { background: var(--white); padding: 100px 24px; }
+  .pain-intro { font-size: 19px; line-height: 1.85; color: var(--text-muted); max-width: 700px; margin-bottom: 60px; }
+  .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px; background: var(--cream-dark); }
+  .pain-card { background: var(--white); padding: 36px 32px; position: relative; }
+  .pain-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--gold); transition: height 0.4s ease; }
+  .pain-card:hover::before { height: 100%; }
+  .pain-number { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 900; color: var(--cream-dark); line-height: 1; margin-bottom: 16px; }
+  .pain-text { font-size: 16px; line-height: 1.75; color: var(--text); }
+  .pain-text strong { color: var(--navy); font-weight: 600; }
+
+  /* AGITAÇÃO */
+  .agit-section { background: var(--navy); padding: 100px 24px; text-align: center; position: relative; overflow: hidden; }
+  .agit-section::after { content: '"'; font-family: 'Playfair Display', serif; font-size: 400px; color: rgba(201,168,76,0.04); position: absolute; top: -80px; right: -40px; line-height: 1; pointer-events: none; }
+  .agit-quote { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3.2vw, 36px); font-weight: 400; font-style: italic; color: var(--white); max-width: 800px; margin: 0 auto 40px; line-height: 1.55; }
+  .agit-quote em { color: var(--gold-light); font-style: normal; font-weight: 700; }
+  .agit-body { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 660px; margin: 0 auto; line-height: 1.85; }
+  .agit-body strong { color: rgba(255,255,255,0.88); }
+
+  /* IA */
+  .ia-section { background: var(--cream-dark); padding: 100px 24px; }
+  .ia-box { background: var(--white); border-left: 4px solid var(--gold); padding: 44px 48px; margin-top: 48px; }
+  .ia-box p { font-size: 17px; line-height: 1.9; color: var(--text); margin-bottom: 20px; }
+  .ia-box p:last-child { margin-bottom: 0; }
+  .ia-box strong { color: var(--navy); font-weight: 600; }
+
+  /* PROGRAMA */
+  .program-section { background: var(--navy); padding: 100px 24px; }
+  .program-lead { font-size: 19px; line-height: 1.85; color: rgba(255,255,255,0.65); max-width: 700px; margin-bottom: 60px; }
+  .program-lead strong { color: var(--white); }
+  .phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 48px; }
+  .phase-item { border: 1px solid rgba(201,168,76,0.2); padding: 24px; transition: border-color 0.3s, background 0.3s; }
+  .phase-item:hover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+  .phase-num { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .phase-name { font-size: 15px; font-weight: 600; color: var(--white); line-height: 1.4; margin-bottom: 8px; }
+  .phase-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.55; }
+
+  /* DIFERENCIAIS */
+  .diff-section { background: var(--white); padding: 100px 24px; }
+  .diff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px; background: var(--cream-dark); margin-top: 52px; }
+  .diff-card { background: var(--white); padding: 36px 32px; }
+  .diff-icon { font-size: 28px; margin-bottom: 16px; }
+  .diff-title { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+  .diff-text { font-size: 15px; line-height: 1.75; color: var(--text-muted); }
+  .diff-text strong { color: var(--text); font-weight: 600; }
+
+  /* BÔNUS */
+  .bonus-section { background: var(--navy); padding: 100px 24px; }
+  .bonus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 52px; }
+  .bonus-card { border: 1px solid rgba(201,168,76,0.25); padding: 40px 36px; position: relative; transition: border-color 0.3s; }
+  .bonus-card:hover { border-color: var(--gold); }
+  .bonus-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, var(--gold), transparent); }
+  .bonus-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; display: block; }
+  .bonus-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--white); line-height: 1.3; margin-bottom: 16px; }
+  .bonus-desc { font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.55); }
+  .bonus-desc strong { color: rgba(255,255,255,0.85); }
+
+  /* PARA QUEM */
+  .forwho-section { background: var(--cream); padding: 100px 24px; }
+  .forwho-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 52px; }
+  @media(max-width: 640px) { .forwho-grid { grid-template-columns: 1fr; } }
+  .forwho-col h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 2px solid; }
+  .forwho-col.yes h3 { color: var(--navy); border-color: var(--gold); }
+  .forwho-col.no h3 { color: var(--text-muted); border-color: #E0E0E0; }
+  .forwho-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; font-size: 15px; line-height: 1.6; color: var(--text); }
+  .forwho-icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; border-radius: 50%; }
+  .yes .forwho-icon { background: var(--gold); color: var(--navy); }
+  .no .forwho-icon { background: #F0F0F0; color: var(--text-muted); }
+
+  /* MENTOR */
+  .mentor-section { background: var(--cream-dark); padding: 100px 24px; overflow: hidden; }
+  .mentor-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 72px; align-items: end; }
+  @media(max-width: 760px) { .mentor-inner { grid-template-columns: 1fr; gap: 40px; } .mentor-photo-wrap { max-width: 240px; margin: 0 auto; } }
+  .mentor-photo-wrap { position: relative; align-self: end; }
+  .mentor-photo-wrap::before { content: ""; position: absolute; bottom: 0; left: 20px; right: -20px; height: 82%; border: 1px solid rgba(201,168,76,0.3); z-index: 0; }
+  .mentor-photo { position: relative; z-index: 1; width: 100%; display: block; }
+  .mentor-label { font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .mentor-name { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 900; color: var(--navy); line-height: 1.1; margin-bottom: 6px; }
+  .mentor-role { font-size: 15px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 32px; }
+  .mentor-divider { width: 40px; height: 2px; background: var(--gold); margin-bottom: 28px; opacity: 0.6; }
+  .mentor-bio { font-size: 16px; line-height: 1.9; color: var(--text-muted); margin-bottom: 18px; }
+  .mentor-bio strong { color: var(--text); font-weight: 600; }
+  .mentor-stats { display: flex; gap: 36px; margin-top: 36px; padding-top: 28px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .mentor-stat-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+  .mentor-stat-label { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+  /* OBJEÇÕES */
+  .obj-section { background: var(--white); padding: 100px 24px; }
+  .obj-list { margin-top: 52px; }
+  .obj-item { border-top: 1px solid rgba(0,0,0,0.08); padding: 36px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media(max-width: 700px) { .obj-item { grid-template-columns: 1fr; gap: 20px; } }
+  .obj-question { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--navy); line-height: 1.4; }
+  .obj-question::before { content: '"'; color: var(--gold); font-size: 28px; line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .obj-answer { font-size: 16px; line-height: 1.85; color: var(--text-muted); }
+  .obj-answer strong { color: var(--text); font-weight: 600; }
+
+  /* URGÊNCIA */
+  .urgency-strip { background: var(--gold); padding: 20px 24px; text-align: center; }
+  .urgency-strip p { font-size: 14px; font-weight: 600; color: var(--navy); letter-spacing: 0.04em; }
+
+  /* APLICAÇÃO */
+  .offer-section { background: var(--navy); padding: 100px 24px; text-align: center; }
+  .offer-box { max-width: 700px; margin: 0 auto; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.25); padding: 64px 52px; position: relative; }
+  .offer-box::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background: var(--gold); }
+  .offer-title { font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 44px); font-weight: 900; color: var(--white); margin-bottom: 16px; line-height: 1.2; }
+  .offer-title em { color: var(--gold); font-style: italic; }
+  .offer-subtitle { font-size: 17px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 44px; }
+  .offer-steps { text-align: left; margin-bottom: 44px; }
+  .offer-steps-title { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .step-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+  .step-num { width: 24px; height: 24px; flex-shrink: 0; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4); color: var(--gold); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .offer-guarantee { margin-top: 32px; background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.2); padding: 24px 28px; text-align: left; }
+  .guarantee-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .guarantee-text { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.75; }
+  .guarantee-text strong { color: rgba(255,255,255,0.8); }
+
+  /* FAQ */
+  .faq-section { background: var(--cream); padding: 100px 24px; }
+  .faq-list { margin-top: 52px; max-width: 720px; }
+  .faq-item { border-bottom: 1px solid rgba(0,0,0,0.08); padding: 28px 0; }
+  .faq-q { font-size: 17px; font-weight: 600; color: var(--navy); margin-bottom: 12px; }
+  .faq-a { font-size: 15px; line-height: 1.8; color: var(--text-muted); }
+
+  /* CTA FINAL */
+  .cta-final { background: var(--navy); padding: 120px 24px; text-align: center; position: relative; overflow: hidden; }
+  .cta-final::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(201,168,76,0.1) 0%, transparent 70%); }
+  .cta-final-title { font-family: 'Playfair Display', serif; font-size: clamp(30px, 5vw, 56px); font-weight: 900; color: var(--white); max-width: 720px; margin: 0 auto 20px; line-height: 1.12; }
+  .cta-final-title em { color: var(--gold-light); font-style: italic; }
+  .cta-final-sub { font-size: 18px; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto 52px; line-height: 1.8; }
+
+  footer { background: #07111C; padding: 40px 24px; text-align: center; }
+  footer p { font-size: 12px; color: rgba(255,255,255,0.2); line-height: 1.8; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="sticky-nav" id="stickyNav">
+  <span class="sticky-logo">Conhecimento de Valor</span>
+  <a href="#aplicacao" class="sticky-cta">Quero me candidatar</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <p class="hero-eyebrow">Programa de Acompanhamento — Conhecimento de Valor</p>
+  <h1 class="hero-headline">
+    Transforme a sua expertise em<br>
+    <em>renda, liberdade geográfica</em><br>e liberdade de tempo.
+  </h1>
+  <p class="hero-sub">
+    Imagine acordar amanhã com um negócio digital que carrega a sua autoridade, alcança pessoas que você nunca conheceria pessoalmente e gera receita enquanto você vive a vida que escolheu. Esse é o destino. O programa é o caminho — e eu caminho com você.
+  </p>
+  <div class="hero-cta">
+    <a href="#aplicacao" class="btn-primary">Quero me candidatar</a>
+    <a href="#programa" class="btn-ghost">Ver o programa</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Continue</span>
+  </div>
+</section>
+
+<!-- ═══ DORES ═══ -->
+<section class="pain-section">
+  <div class="section-inner">
+    <p class="section-label reveal">O que especialistas sentem, mas raramente dizem</p>
+    <h2 class="section-title reveal">Você construiu algo extraordinário.<br>Mas ainda não descobriu como fazer ele trabalhar sem você.</h2>
+    <p class="pain-intro reveal">
+      Anos de estudo, prática e resultados comprovados. Uma reputação construída com dedicação. E mesmo assim, uma sensação persistente de que o teto está cada vez mais próximo — porque tudo o que você conquistou ainda depende da sua presença, da sua agenda, do seu corpo presente.
+    </p>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="pain-number">01</div>
+        <p class="pain-text">Você entrega transformações reais todos os dias. Mas quando você para — por um dia, uma semana, um mês — <strong>a receita para junto.</strong> O seu valor máximo ainda está preso a uma janela de agenda.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-number">02</div>
+        <p class="pain-text">A ideia de criar um infoproduto já passou pela sua cabeça. Mas veio junto a dúvida: <strong>"Com tanta coisa gratuita — e agora com IA gerando conteúdo — alguém vai pagar pelo meu?"</strong> E o projeto não saiu do lugar.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-number">03</div>
+        <p class="pain-text">Você tentou uma vez. Ou conhece alguém que tentou. Comprou o curso, começou animado, <strong>e travou no meio do caminho.</strong> O projeto ficou pela metade — e com ele, a crença de que era possível.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-number">04</div>
+        <p class="pain-text">Férias precisam de meses de antecedência. Uma viagem espontânea é quase impossível. <strong>A sua liberdade está condicionada à sua agenda</strong> — e no fundo, você sabe que merecia mais do que isso.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-number">05</div>
+        <p class="pain-text">O mundo digital parece um universo à parte. Algoritmos, tráfego, funis, copy... <strong>Você não se vê nesse papel.</strong> Você é um especialista — não um criador de conteúdo.</p>
+      </div>
+      <div class="pain-card reveal">
+        <div class="pain-number">06</div>
+        <p class="pain-text">Você sabe — no mais profundo — que o seu conhecimento tem um alcance muito maior do que o número de pessoas que você consegue atender presencialmente. <strong>Só ainda não encontrou o caminho para isso — nem a pessoa certa para percorrê-lo com você.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AGITAÇÃO ═══ -->
+<section class="agit-section">
+  <div class="section-inner">
+    <p class="agit-quote reveal">
+      Você não precisa de mais um método.<br>
+      Você precisa de alguém que <em>não deixe você parar</em><br>no meio do caminho.
+    </p>
+    <p class="agit-body reveal">
+      A informação nunca foi o problema. O que para a maioria dos especialistas não é falta de capacidade — é a solidão do processo. Criar um infoproduto do zero, no meio de uma rotina já cheia, sem alguém que conheça cada obstáculo antes que ele apareça... <strong>é onde os projetos morrem, não por falta de talento, mas por falta de suporte real.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ═══ OBJEÇÃO IA ═══ -->
+<section class="ia-section">
+  <div class="section-inner">
+    <p class="section-label reveal">A pergunta que está na sua cabeça agora</p>
+    <h2 class="section-title reveal">"Com IA, qualquer pessoa consegue criar um infoproduto. Por que eu precisaria de acompanhamento?"</h2>
+    <div class="ia-box reveal">
+      <p>Sim — e é exatamente por isso que ter só um método ou só uma ferramenta deixou de ser suficiente. <strong>A IA democratizou a produção. Mas ela não cria a clareza sobre o que você tem de genuinamente único. Ela não valida se existe demanda real antes de você investir meses produzindo. Ela não posiciona a sua oferta com a autoridade que a sua trajetória merece.</strong></p>
+      <p>E principalmente: ela não está lá quando você trava — e você vai travar. Todo mundo trava. A diferença está em ter alguém do seu lado nesse momento, com a experiência de quem já passou por ali, para te ajudar a atravessar.</p>
+      <p><strong>A IA é uma ferramenta poderosa que usamos juntos ao longo de todo o programa.</strong> Ela acelera a produção, otimiza processos e elimina o que seria horas de trabalho manual. Mas ela trabalha a serviço da sua estratégia — não no lugar dela.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROGRAMA ═══ -->
+<section class="program-section" id="programa">
+  <div class="section-inner">
+    <p class="section-label reveal">Como funciona</p>
+    <h2 class="section-title light reveal">Programa de Acompanhamento<br>Conhecimento de Valor</h2>
+    <div class="gold-divider reveal"></div>
+    <p class="program-lead reveal">
+      Não é uma plataforma com vídeos esperando que você encontre tempo. É um <strong>processo guiado, etapa por etapa, ao seu lado</strong> — com direcionamento estratégico, feedback honesto e presença real em cada momento que importa. Do primeiro passo ao primeiro resultado.
+    </p>
+    <div class="phases">
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 01</p>
+        <p class="phase-name">Clareza de Expertise</p>
+        <p class="phase-desc">Definimos juntos o que você tem de único, para quem é e qual transformação você entrega com autoridade.</p>
+      </div>
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 02</p>
+        <p class="phase-name">Validação de Demanda</p>
+        <p class="phase-desc">Antes de produzir uma aula sequer, confirmamos que existe um comprador esperando do outro lado.</p>
+      </div>
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 03</p>
+        <p class="phase-name">Estrutura do Produto</p>
+        <p class="phase-desc">Construímos a jornada de transformação do aluno — o esqueleto do seu infoproduto, com começo, meio e fim claros.</p>
+      </div>
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 04</p>
+        <p class="phase-name">Produção Acelerada</p>
+        <p class="phase-desc">Gravação, edição e entrega — com os atalhos certos e IA como aliada que elimina horas de trabalho manual.</p>
+      </div>
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 05</p>
+        <p class="phase-name">Oferta e Posicionamento</p>
+        <p class="phase-desc">Copy, precificação e mensagem — para que o mercado reconheça, confie e compre com convicção.</p>
+      </div>
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 06</p>
+        <p class="phase-name">Lançamento</p>
+        <p class="phase-desc">Estratégia completa — do aquecimento ao fechamento de carrinho. Nada deixado ao acaso.</p>
+      </div>
+      <div class="phase-item reveal">
+        <p class="phase-num">Etapa 07</p>
+        <p class="phase-name">Escala e Recorrência</p>
+        <p class="phase-desc">Como transformar o primeiro lançamento em uma fonte de receita que funciona de forma contínua.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DIFERENCIAIS ═══ -->
+<section class="diff-section">
+  <div class="section-inner">
+    <p class="section-label reveal">O que torna este programa diferente</p>
+    <h2 class="section-title reveal">A distância entre saber o que fazer<br>e realmente fazer — é o acompanhamento.</h2>
+    <div class="gold-divider reveal"></div>
+    <div class="diff-grid">
+      <div class="diff-card reveal">
+        <div class="diff-icon">🎯</div>
+        <p class="diff-title">Sob medida para você</p>
+        <p class="diff-text">Cada decisão — nicho, formato, preço, canal — é tomada considerando <strong>o seu contexto, a sua história e o seu momento.</strong> Não uma fórmula genérica aplicada a todo mundo.</p>
+      </div>
+      <div class="diff-card reveal">
+        <div class="diff-icon">⚡</div>
+        <p class="diff-title">Velocidade real</p>
+        <p class="diff-text">Quem tenta sozinho leva meses — ou desiste. Com acompanhamento, <strong>você vai direto ao que importa,</strong> sem os desvios que custam tempo, energia e motivação.</p>
+      </div>
+      <div class="diff-card reveal">
+        <div class="diff-icon">🔍</div>
+        <p class="diff-title">Feedback que transforma</p>
+        <p class="diff-text">A IA concorda com tudo que você escreve. Eu não. <strong>Você precisa de alguém que aponte o que não está funcionando</strong> antes que você invista mais tempo nisso.</p>
+      </div>
+      <div class="diff-card reveal">
+        <div class="diff-icon">🤝</div>
+        <p class="diff-title">Compromisso com o seu resultado</p>
+        <p class="diff-text">Quando alguém acompanha, cobra e acredita no seu projeto, <strong>a probabilidade de você chegar ao fim é exponencialmente maior</strong> do que sozinho.</p>
+      </div>
+      <div class="diff-card reveal">
+        <div class="diff-icon">🧠</div>
+        <p class="diff-title">Experiência de quem já errou por você</p>
+        <p class="diff-text">Mais de 10 infoprodutos criados e lançados. <strong>Você herda os acertos e não paga pelos erros</strong> que já foram cometidos — e superados — antes de você.</p>
+      </div>
+      <div class="diff-card reveal">
+        <div class="diff-icon">🌍</div>
+        <p class="diff-title">De onde você estiver</p>
+        <p class="diff-text">100% remoto. <strong>Localização nunca foi limitação</strong> — e o programa foi construído exatamente para provar isso na prática.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BÔNUS ═══ -->
+<section class="bonus-section">
+  <div class="section-inner">
+    <p class="section-label reveal">O que está incluído além das etapas</p>
+    <h2 class="section-title light reveal">Dois bônus que aceleram<br>cada fase do seu projeto.</h2>
+    <div class="gold-divider reveal"></div>
+    <div class="bonus-grid">
+      <div class="bonus-card reveal">
+        <span class="bonus-tag">Bônus 01 — Ferramentas Estratégicas</span>
+        <p class="bonus-title">Mão na Massa: as ferramentas que uso no meu dia a dia</p>
+        <p class="bonus-desc">Aulas rápidas e práticas no formato <strong>"Mão na Massa"</strong> — focadas nas ferramentas estratégicas que utilizo para <strong>otimizar processos e ganhar velocidade na produção.</strong> Sem enrolação, sem teoria desnecessária. Você aprende fazendo, exatamente como eu faço.</p>
+      </div>
+      <div class="bonus-card reveal">
+        <span class="bonus-tag">Bônus 02 — Encontros ao Vivo</span>
+        <p class="bonus-title">2 encontros mensais via Google Meet durante 6 meses</p>
+        <p class="bonus-desc">Ao longo de 6 meses, realizamos <strong>2 encontros mensais ao vivo</strong> — momentos onde aplico diretamente o meu <strong>olhar estratégico à sua realidade</strong> e aos desafios do seu projeto. Não é uma aula genérica. É uma sessão construída em cima do que você está vivendo naquele momento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PARA QUEM ═══ -->
+<section class="forwho-section">
+  <div class="section-inner">
+    <p class="section-label reveal">Honestidade antes de qualquer coisa</p>
+    <h2 class="section-title reveal">Este programa foi feito para você?</h2>
+    <div class="gold-divider reveal"></div>
+    <div class="forwho-grid">
+      <div class="forwho-col yes reveal">
+        <h3>É para você se...</h3>
+        <div class="forwho-item"><span class="forwho-icon">✓</span><span>Você é médico, advogado, coach, consultor, psicólogo ou especialista com conhecimento comprovado em qualquer área</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✓</span><span>Você quer construir uma renda que não dependa exclusivamente da sua presença física</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✓</span><span>Você já tentou criar algo no digital, travou no meio — e desta vez quer ter alguém ao seu lado</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✓</span><span>Você está disposto a seguir um processo com disciplina, comprometimento e presença real</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✓</span><span>Você quer construir algo que funcione de onde você estiver — e no seu ritmo</span></div>
+      </div>
+      <div class="forwho-col no reveal">
+        <h3>Não é para você se...</h3>
+        <div class="forwho-item"><span class="forwho-icon">✗</span><span>Você quer resultado sem processo — e sem compromisso real com as etapas</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✗</span><span>Você acredita que a IA vai fazer tudo por você, sem direcionamento estratégico humano</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✗</span><span>Você não tem nenhum conhecimento ou experiência em nenhuma área específica</span></div>
+        <div class="forwho-item"><span class="forwho-icon">✗</span><span>Você quer escalar um produto já consolidado — este programa é de criação do zero</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MENTOR ═══ -->
+<section class="mentor-section">
+  <div class="mentor-inner">
+    <div class="mentor-photo-wrap reveal">
+      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/wAARCASgA2ADASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAECAwQFBgcICf/EAE4QAAIBAwIEAwYDBwEGBQIBDQABAgMRIQQxBRJBUQZhcQcTIoGRoTKxwQgUI0LR4fBSFTNicpLxJEOCosI0shZEU9IlVGODszdkZXOT/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAWEQEBAQAAAAAAAAAAAAAAAAAAEQH/2gAMAwEAAhEDEQA/APxkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB09DwfUVl7yt/Ch2f4n5WA5sYylJRim29kkblLhmsmlKVL3UN+aeF/U9W6Wk4TQVHRUKTrtWqV38dm7NRSta66t38rHNrzr6qdqtaUoxdr8q+1/1A5seH0abtUnOb8lyr/PobUNDQSjKWljCL2cr38t5GyqWkpNxr1qVJWfXml9Nr/IyQhw7LnOrNv4VzU1f6tLAGvGOghVdOUIyth+708Xb5s2HHgzvdZ7Sp00/pa5NSroaLUYUaTfNhui0l9FYw19ZTaT/dtJu1zWa+9gMVfTcKbTUXZ9VG31s7IwPhuhmm4VpRfnNP7WNiWpjNRX7vp49L3i1/cpOp7t/Fp6HV/Dv9mBpy4Ti8NRH/ANcWvyuYpcL1S/B7ufpNL87G9HV6XmSWnrQk1tCdr/XJljq6TXL7vUQlu06tn65CuJW02ooq9WjUhHu44+phPZ6J1ZU41lopwgv/ADKtVxTGs0XDNS+WpToxm3iVJPP6sI8YD0Gp8OLl59Pq6af+iq7S/wA+RydboNXo3/HpNRvbmWY/UDVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANjRaOtq5tU42jFXlJ7RRPDNK9ZrIUM2eZNdEerrKho9M4JOlTpYaSy5efnn/Ooaeg0Ol0qjy2lqGrqU7YXffBs1tTKNS8Yxtypx6WW3M/0NbmnCMq3/mTim208Z+GJiVWXM2qjcYuzl3lu38sgZ63PJOVapaMP9XT+rNKdTUarlhp4NK10m7L1f8AcVqrk/eyi3f4adNdNv8AGWnUq06cqVO75pJS5cJvtjogMcNPp9O062onUqNbU8JeV/6Gxp3p8p6enZOyjKKnL8zXlThToutOpd2XM0t8fhj9DBF6jVPlp/wqUXmzsl6+YHTadRyVPh9KSbxaLjb0SMWtk6do1NNWpprdN7fTY0KSqQk3p6kp26xW3bcz0+I6ui5U6k6dS6zGcU7foBSNWObVKrti27RMa9NO/vm84240KanlWWHfvYx63Q1tZqXSqYVGMr3kjLhP0NRVqd7YVUB+blz/JxSMFe1rr6i+n2HVrV9fOEJJU6NKHNKUVi7fRLzPM8X9k9HUak9TwniMqdWbvKlWjzQv5SR4bX+BuNaKc40Y0tXTj+GrSqKTa7SjoyDxC+E2+4X6CW/cXf9CEqjblzZd7mHlW/vZMk1bLX9/oSm8cXsUVRpxVlHf1Ljhvcs7w7XXz7AT0KuH8yIVnj1vkj5uyG98bE2X3Ama+KKUo2y3sPKUaV/AUW97kJ9QOVF4ku4i45e45LW7sCE78vm/sJ+gT+Y2HzvuEXd77Ai0r2+Yp5fnkX26g4LezAmSfe5T17/Io9rl8E9X+g8v8A7v1ZLb13Amzd3fqdSOv0A+EtcJL9bF2VvIJXvbp1F/YGw0wLhNi+NiW1bK7AR/TIa2LJXe2xN/JgLXTLzHlvlN57Xvk9PxrwvWcI4hQqRl7ihObhWp3vpkttvlufG5xt+v4PoHg7xVqfBvHtPxTTJyWcVYJ2lCXkwPvlJuMlKMmmuqe6Z7Hw5xlax8TbexNnGpJt6o9muVLPqc7gHFtFxbhtHiXDq0a2nrRUoSXb7ryZ1dXFrz6boCbLWX+GOXsTKqko8kZXva13b7GlJ3d7u7ZeELX53S8gOa1d3d3u3u2Rd5bT5lW0bbW7yQ7dv2AcpXUrXVur2Ybf8AaS4p9CnXvmxG/wC1sMHH5bpEe6sE3lPAC1sj4vkVaSa/bIe99vIluaXft/UBuyqT+q6+RMJPqYXuot7LcXgCzv0AvMbtu+pU7MiN2+ZFEBqW/wAyKWS6pAAAAAAAAAAAAAAAAAAAAAAAAAABIEEpEoKwEqyIuybi4BLuThFbu5NnbcCXJEbkqKuT0AWJSS3Iv2IAvzetu5lpuzXe5gW5lpZaXcDNxPFCila0rv6f9znnV4vBPR05R2hPlXzX9jlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/Z" alt="Flávio Amorim" class="mentor-photo" />
+    </div>
+    <div class="mentor-content">
+      <p class="mentor-label reveal">Quem conduz o programa</p>
+      <h2 class="mentor-name reveal">Flávio<br>Amorim</h2>
+      <p class="mentor-role reveal">Estrategista Digital &amp; Mentor de Experts</p>
+      <div class="mentor-divider reveal"></div>
+      <p class="mentor-bio reveal">
+        Flávio não ensina teoria retirada de livros. Ele <strong>percorreu cada etapa na prática</strong> — do zero ao produto no ar, do primeiro lançamento à recorrência — em mais de 10 infoprodutos criados, produzidos e lançados ao longo da sua trajetória.
+      </p>
+      <p class="mentor-bio reveal">
+        No processo, identificou o padrão real que trava os melhores especialistas: <strong>não é falta de conhecimento. É não ter alguém ao lado que conheça cada ponto de travamento — e que não deixe você desistir quando o caminho fica difícil.</strong>
+      </p>
+      <p class="mentor-bio reveal">
+        Hoje, como mentor e co-produtor de infoprodutos, atende experts no Brasil e no exterior — provando que <strong>localização nunca foi limitação.</strong> De Mato Grosso, constrói negócios digitais que funcionam independente de onde o especialista esteja.
+      </p>
+      <div class="mentor-stats reveal">
+        <div>
+          <p class="mentor-stat-num">+10</p>
+          <p class="mentor-stat-label">infoprodutos<br>criados</p>
+        </div>
+        <div>
+          <p class="mentor-stat-num">BR+</p>
+          <p class="mentor-stat-label">Brasil e<br>exterior</p>
+        </div>
+        <div>
+          <p class="mentor-stat-num">100%</p>
+          <p class="mentor-stat-label">processo vivido<br>na prática</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OBJEÇÕES ═══ -->
+<section class="obj-section">
+  <div class="section-inner">
+    <p class="section-label reveal">O que ainda pode estar te travando</p>
+    <h2 class="section-title reveal">As dúvidas que impedem quem mais deveria avançar.</h2>
+    <div class="obj-list">
+      <div class="obj-item reveal">
+        <p class="obj-question">Não tenho tempo. Já trabalho demais.</p>
+        <p class="obj-answer">O programa existe exatamente para que você gaste o mínimo de tempo possível no processo. <strong>O acompanhamento elimina os desvios que consomem semanas</strong> de quem tenta sozinho. E a pergunta real é outra: você pode continuar do jeito que está pelos próximos anos?</p>
+      </div>
+      <div class="obj-item reveal">
+        <p class="obj-question">Não entendo nada de tecnologia.</p>
+        <p class="obj-answer">Você não precisa. <strong>Cada etapa técnica é trabalhada junto</strong> — com as ferramentas certas indicadas e suporte direto em cada passo. Você foca no seu conhecimento. A parte técnica, a gente resolve juntos.</p>
+      </div>
+      <div class="obj-item reveal">
+        <p class="obj-question">E se eu criar e não vender nada?</p>
+        <p class="obj-answer">A etapa de validação existe para eliminar esse risco. <strong>Você não vai produzir nada antes de confirmar que existe demanda real.</strong> Esse é um dos erros mais comuns — e é o primeiro que o programa foi construído para evitar.</p>
+      </div>
+      <div class="obj-item reveal">
+        <p class="obj-question">Parece que é só para quem já tem audiência.</p>
+        <p class="obj-answer">Não é. A maioria dos primeiros lançamentos acontece <strong>sem audiência consolidada</strong> — com tráfego pago e relacionamentos diretos. O programa cobre exatamente esse cenário: do zero, sem depender de seguidores.</p>
+      </div>
+      <div class="obj-item reveal">
+        <p class="obj-question">Como funciona o acompanhamento na prática?</p>
+        <p class="obj-answer">Após a aprovação da aplicação, definimos juntos o formato mais adequado para o seu ritmo e projeto. <strong>É 100% remoto e adaptado à sua rotina</strong> — não o contrário. Além dos encontros mensais ao vivo, você tem suporte direto ao longo de todo o processo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ URGÊNCIA ═══ -->
+<div class="urgency-strip">
+  <p>⏳ Vagas limitadas por turma — o acompanhamento individual exige dedicação real de ambos os lados.</p>
+</div>
+
+<!-- ═══ APLICAÇÃO ═══ -->
+<section class="offer-section" id="aplicacao">
+  <div class="offer-box reveal">
+    <h2 class="offer-title">Antes de entrar,<br><em>quero te conhecer.</em></h2>
+    <p class="offer-subtitle">O programa não é para todo mundo — e isso é intencional. Quero trabalhar com quem tem algo real a oferecer e está pronto para construir isso com seriedade e comprometimento.</p>
+
+    <div class="offer-steps">
+      <p class="offer-steps-title">Como funciona a aplicação</p>
+      <div class="step-item"><span class="step-num">1</span><span>Você responde algumas perguntas sobre a sua expertise e o seu momento atual</span></div>
+      <div class="step-item"><span class="step-num">2</span><span>Avalio se o programa faz sentido para o seu perfil e contexto específico</span></div>
+      <div class="step-item"><span class="step-num">3</span><span>Se houver alinhamento, entro em contato com os próximos passos</span></div>
+      <div class="step-item"><span class="step-num">4</span><span>Leva menos de 5 minutos — sem compromisso de compra</span></div>
+    </div>
+
+    <a href="https://forms.gle/pc4XQyauduLP35k96" target="_blank" class="btn-primary" style="width:100%;text-align:center;display:block;padding:20px;clip-path:none;font-size:16px;">
+      Preencher minha aplicação agora
+    </a>
+
+    <div class="offer-guarantee">
+      <p class="guarantee-label">✦ Garantia de 30 dias</p>
+      <p class="guarantee-text"><strong>Se nos primeiros 30 dias você sentir que o programa não é o que esperava,</strong> devolvemos 100% do seu investimento — sem burocracia, sem perguntas, sem letras miúdas. O risco é meu, não seu.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq-section">
+  <div class="section-inner">
+    <p class="section-label reveal">Últimas dúvidas</p>
+    <h2 class="section-title reveal">Perguntas frequentes</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <p class="faq-q">Em quanto tempo vejo resultado?</p>
+        <p class="faq-a">Participantes que seguem o processo de forma consistente conseguem ter o produto pronto e o primeiro lançamento feito em 60 a 90 dias. O acompanhamento acelera significativamente esse ritmo em relação a quem tenta sozinho.</p>
+      </div>
+      <div class="faq-item reveal">
+        <p class="faq-q">Preciso de câmera, estúdio ou equipamentos profissionais?</p>
+        <p class="faq-a">Não. O celular que você tem hoje é suficiente para começar. Qualidade de conteúdo e clareza de entrega importam muito mais do que qualidade de produção.</p>
+      </div>
+      <div class="faq-item reveal">
+        <p class="faq-q">O acompanhamento é individual ou em grupo?</p>
+        <p class="faq-a">Isso é definido após a aplicação, de acordo com o seu perfil e necessidade. Existe formato para ambos os casos, sempre com o olhar estratégico aplicado diretamente à sua realidade.</p>
+      </div>
+      <div class="faq-item reveal">
+        <p class="faq-q">Posso participar de fora do Brasil?</p>
+        <p class="faq-a">Sim. O programa é 100% remoto e já atende especialistas no exterior. Localização nunca foi — e nunca será — uma limitação.</p>
+      </div>
+      <div class="faq-item reveal">
+        <p class="faq-q">Como funcionam os encontros ao vivo?</p>
+        <p class="faq-a">São 2 encontros mensais via Google Meet ao longo de 6 meses. Cada encontro é uma sessão estratégica focada nos desafios reais do seu projeto naquele momento — não uma aula genérica.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="cta-final">
+  <h2 class="cta-final-title reveal">
+    Você já tem o conhecimento.<br>
+    <em>O que faltava era alguém<br>disposto a caminhar com você.</em>
+  </h2>
+  <p class="cta-final-sub reveal">
+    A versão da sua vida onde o seu conhecimento trabalha por você — independente de onde você esteja — começa com uma aplicação de 5 minutos.
+  </p>
+  <div class="reveal">
+    <a href="https://forms.gle/pc4XQyauduLP35k96" target="_blank" class="btn-primary" style="font-size:15px;padding:20px 56px;">
+      Preencher minha aplicação
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>Programa Conhecimento de Valor &nbsp;|&nbsp; Todos os direitos reservados<br>
+  Resultados dependem de dedicação, contexto e aplicação individual de cada participante.</p>
+</footer>
+
+<script>
+  const nav = document.getElementById('stickyNav');
+  window.addEventListener('scroll', () => { nav.classList.toggle('visible', window.scrollY > 500); });
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
