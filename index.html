@@ -134,11 +134,11 @@
 
   /* MENTOR */
   .mentor-section { background: var(--cream-dark); padding: 100px 24px; overflow: hidden; }
-  .mentor-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 72px; align-items: end; }
-  @media(max-width: 760px) { .mentor-inner { grid-template-columns: 1fr; gap: 40px; } .mentor-photo-wrap { max-width: 240px; margin: 0 auto; } }
-  .mentor-photo-wrap { position: relative; align-self: end; }
-  .mentor-photo-wrap::before { content: ""; position: absolute; bottom: 0; left: 20px; right: -20px; height: 82%; border: 1px solid rgba(201,168,76,0.3); z-index: 0; }
-  .mentor-photo { position: relative; z-index: 1; width: 100%; display: block; }
+  .mentor-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 50px; align-items: start; }
+@media(max-width: 760px) { .mentor-inner { grid-template-columns: 1fr; gap: 40px; } .mentor-photo-wrap { max-width: 240px; margin: 0 auto; } }
+.mentor-photo-wrap { position: relative; align-self: start; }
+.mentor-photo-wrap::before { display: none; content: ""; }
+.mentor-photo { position: relative; z-index: 1; width: 100%; display: block; }
   .mentor-label { font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
   .mentor-name { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 900; color: var(--navy); line-height: 1.1; margin-bottom: 6px; }
   .mentor-role { font-size: 15px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 32px; }
@@ -433,16 +433,16 @@
 <!-- ═══ MENTOR ═══ -->
 <section class="mentor-section">
   <div class="mentor-inner">
-    <div style="display: flex; gap: 50px; align-items: flex-start; max-width: 1200px; margin: 0 auto; padding: 30px 0; flex-wrap: wrap;">
-        <div style="flex: 0 0 350px;">
-            <img src="foto.png" alt="Flávio Amorim" style="width: 100%; height: 450px; object-fit: cover; display: block;">
-        </div>
-        <div style="flex: 1 1 65%; min-width: 300px;">
-            <p class="mentor-label reveal" style="margin-top: 0;">Quem conduz o programa</p>
-            <h2 class="mentor-name reveal" style="font-size: 48px; line-height: 1.1; margin: 10px 0 20px 0;">Flávio<br>Amorim</h2>
-            <p class="mentor-role reveal" style="margin-bottom: 25px;">Estrategista Digital &amp; Mentor de Experts</p>
-            <p class="mentor-bio reveal">
-                Flávio não ensina teoria retirada de livros. Ele <strong>percorreu cada etapa na prática</strong> – do zero ao produto no ar, do primeiro lançamento à recorrência — em mais de 10 infoprodutos criados, produzidos e lançados ao longo da sua trajetória.
+ <div class="mentor-photo-wrap reveal" style="margin-bottom: 0;">
+    <img src="foto.png" alt="Flávio Amorim" class="profile-image" style="width: 100%; max-width: 350px; height: 450px; object-fit: cover; display: block; border: none; box-shadow: none;">
+</div>
+<div class="mentor-content" style="margin-top: 0; padding-top: 0;">
+    <p class="mentor-label reveal" style="margin-top: 0;">Quem conduz o programa</p>
+    <h2 class="mentor-name reveal" style="font-size: 48px; line-height: 1.1; margin: 10px 0 20px 0;">Flávio<br>Amorim</h2>
+    <p class="mentor-role reveal" style="margin-bottom: 25px;">Estrategista Digital &amp; Mentor de Experts</p>
+    <p class="mentor-bio reveal">
+        Flávio não ensina teoria retirada de livros. Ele <strong>percorreu cada etapa na prática</strong> – do zero ao produto no ar, do primeiro lançamento à recorrência — em mais de 10 infoprodutos criados, produzidos e lançados ao longo da sua trajetória.
+    </p>
             </p>
       <p class="mentor-bio reveal">
         No processo, identificou o padrão real que trava os melhores especialistas: <strong>não é falta de conhecimento. É não ter alguém ao lado que conheça cada ponto de travamento — e que não deixe você desistir quando o caminho fica difícil.</strong>
@@ -450,8 +450,6 @@
       <p class="mentor-bio reveal">
         Hoje, como mentor e co-produtor de infoprodutos, atende experts no Brasil e no exterior — provando que <strong>localização nunca foi limitação.</strong> De Mato Grosso, constrói negócios digitais que funcionam independente de onde o especialista esteja.
       </p>
-         </div>
-</div>
       <div class="mentor-stats reveal">
         <div>
           <p class="mentor-stat-num">+10</p>
