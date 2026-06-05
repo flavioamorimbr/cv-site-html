@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seu Guia Gratuito — Conhecimento de Valor | Flávio Amorim</title>
+<title>Guia Gratuito — Conhecimento de Valor | Flávio Amorim</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -362,7 +362,6 @@ footer p{font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;}
           id="mbForm"
           action="https://app.mailingboss.com/lists/6a2205c4b4424/subscribe"
           method="post"
-          target="mbFrame"
           onsubmit="handleSubmit(event)"
         >
           <!-- Primeiro Nome -->
@@ -388,6 +387,9 @@ footer p{font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;}
             <option value="55BRAZIL" selected>Brazil (+55)</option>
           </select>
 
+          <!-- URL de redirecionamento após cadastro — Mailingboss usa este campo -->
+          <input type="hidden" name="redirect" value="https://flavioamorim.com.br/guia/guia-conhecimento-de-valor.pdf" />
+
           <!-- WhatsApp -->
           <div class="form-group">
             <label class="form-label" for="PHONE">WhatsApp (com DDD)</label>
@@ -410,8 +412,7 @@ footer p{font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;}
       </div>
     </div>
 
-    <!-- iframe oculto: recebe o POST do Mailingboss sem redirecionar a página -->
-    <iframe name="mbFrame" style="display:none" width="0" height="0"></iframe>
+    <!-- iframe oculto removido — envio direto ao Mailingboss -->
 
     <!-- SUCCESS STATE -->
     <div class="success-box" id="successState">
@@ -461,26 +462,16 @@ function handleSubmit(e) {
   const email    = document.getElementById('EMAIL').value.trim();
   const whatsapp = document.getElementById('PHONE').value.trim();
 
-  if (!name)     { shake('FNAME'); e.preventDefault(); return; }
+  // Validações — se falhar, cancela o submit
+  if (!name)     { shake('FNAME');  e.preventDefault(); return; }
   if (!email || !email.includes('@')) { shake('EMAIL'); e.preventDefault(); return; }
   if (!whatsapp || whatsapp.replace(/\D/g,'').length < 8) { shake('PHONE'); e.preventDefault(); return; }
 
-  // Desabilita o botão e mostra loading
+  // Validações OK — feedback visual e deixa o form submeter normalmente ao Mailingboss
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '⏳ Enviando...';
-
-  // Log interno (sem armazenar dados no frontend — conformidade LGPD)
-  console.log('📧 Lead enviado ao Mailingboss com sucesso.');
-
-  // Exibe o estado de sucesso após breve delay (tempo do POST)
-  setTimeout(() => {
-    document.getElementById('successName').textContent = name;
-    document.getElementById('formState').style.display = 'none';
-    document.getElementById('successState').style.display = 'block';
-  }, 1400);
-
-  // Deixa o form ser submetido normalmente ao Mailingboss via iframe
+  // O Mailingboss recebe os dados e redireciona para o PDF via campo "redirect"
 }
 
 function shake(id) {
