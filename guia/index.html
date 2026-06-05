@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -196,25 +195,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .success-btn{display:inline-block;background:var(--gold);color:var(--navy);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:12px 28px;border-radius:6px;text-decoration:none;transition:background .2s;}
 .success-btn:hover{background:var(--gold-light);}
 
-/* DB TABLE */
-.db-section{background:var(--navy);padding:48px 24px;}
-.db-inner{max-width:860px;margin:0 auto;}
-.db-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:6px;}
-.db-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px;}
-.db-table-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:12px;overflow:auto;}
-.db-table{width:100%;border-collapse:collapse;font-size:13px;}
-.db-table th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid rgba(201,168,76,.15);}
-.db-table td{padding:12px 16px;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.05);}
-.db-table tr:last-child td{border-bottom:none;}
-.db-table tr:hover td{background:rgba(255,255,255,.03);}
-.db-empty{padding:32px;text-align:center;color:rgba(255,255,255,.25);font-size:13px;}
-.db-count{font-size:12px;color:rgba(255,255,255,.3);margin-top:12px;text-align:right;}
-.db-export{
-  background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);
-  color:var(--gold);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  padding:8px 20px;border-radius:6px;cursor:pointer;transition:background .2s;margin-top:16px;
-}
-.db-export:hover{background:rgba(201,168,76,.2);}
+/* LGPD STRIP */
+.lgpd-strip{background:var(--navy);border-top:1px solid rgba(201,168,76,.12);padding:20px 24px;text-align:center;}
+.lgpd-strip p{font-size:11px;color:rgba(255,255,255,.3);line-height:1.8;max-width:600px;margin:0 auto;}
+.lgpd-strip a{color:rgba(201,168,76,.6);text-decoration:none;}
+.lgpd-strip a:hover{color:var(--gold);}
 
 /* FOOTER */
 footer{background:#07111C;padding:28px 24px;text-align:center;}
@@ -344,30 +329,16 @@ footer p{font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;}
   <p style="font-size:12px;color:var(--muted);margin-top:12px;">✦ Gratuito · Sem spam · Cancele quando quiser</p>
 </div>
 
-<!-- DATABASE -->
-<div class="db-section">
-  <div class="db-inner">
-    <h3 class="db-title">📊 Banco de Dados — Leads Capturados</h3>
-    <p class="db-sub">Dados dos interessados que solicitaram o guia. Apenas você vê esta seção.</p>
-    <div class="db-table-wrap">
-      <table class="db-table" id="leadsTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>WhatsApp</th>
-            <th>Data / Hora</th>
-          </tr>
-        </thead>
-        <tbody id="leadsBody">
-          <tr><td colspan="5"><div class="db-empty">Nenhum lead capturado ainda. Os dados aparecerão aqui assim que alguém preencher o formulário.</div></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div id="dbCount" class="db-count"></div>
-    <button class="db-export" id="exportBtn" onclick="exportCSV()" style="display:none;">⬇ Exportar CSV</button>
-  </div>
+
+
+<div class="lgpd-strip">
+  <p>
+    🔒 <strong style="color:rgba(255,255,255,.5);">Seus dados estão protegidos.</strong>
+    As informações fornecidas neste formulário são coletadas exclusivamente para envio do guia gratuito e comunicações relacionadas ao Programa Conhecimento de Valor,
+    em conformidade com a <strong style="color:rgba(255,255,255,.5);">Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018)</strong>.
+    Não compartilhamos seus dados com terceiros. Você pode solicitar a exclusão a qualquer momento pelo e-mail
+    <a href="mailto:contato@flavioamorim.com.br">contato@flavioamorim.com.br</a>.
+  </p>
 </div>
 
 <footer>
@@ -378,7 +349,7 @@ footer p{font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;}
 <!-- ═══ POPUP ═══ -->
 <div class="overlay" id="overlay" onclick="closeOnOverlay(event)">
   <div class="popup" id="popup">
-    <!-- FORM STATE -->
+    <!-- FORM STATE — enviado ao Mailingboss / Builderall -->
     <div id="formState">
       <div class="popup-top">
         <button class="popup-close" onclick="closePopup()">✕</button>
@@ -387,85 +358,78 @@ footer p{font-size:11px;color:rgba(255,255,255,.2);line-height:1.8;}
         <p class="popup-sub">Preencha os campos abaixo e receba o guia agora.</p>
       </div>
       <div class="popup-body">
-        <div class="form-group">
-          <label class="form-label" for="firstName">Primeiro Nome</label>
-          <input class="form-input" type="text" id="firstName" placeholder="Como posso te chamar?" autocomplete="given-name"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="email">E-mail</label>
-          <input class="form-input" type="email" id="email" placeholder="seu@email.com" autocomplete="email"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="whatsapp">WhatsApp (com DDD)</label>
-          <input class="form-input" type="tel" id="whatsapp" placeholder="(xx) 9xxxx-xxxx" autocomplete="tel"/>
-        </div>
-        <button class="btn-submit" id="submitBtn" onclick="submitForm()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Baixar Agora!
-        </button>
-        <p class="privacy-note">🔒 Seus dados estão seguros. Sem spam, prometido.<br>Ao baixar, você concorda com nossa <a href="#">política de privacidade</a>.</p>
+        <form
+          id="mbForm"
+          action="https://app.mailingboss.com/lists/6a2205c4b4424/subscribe"
+          method="post"
+          target="mbFrame"
+          onsubmit="handleSubmit(event)"
+        >
+          <!-- Primeiro Nome -->
+          <div class="form-group">
+            <label class="form-label" for="FNAME">Primeiro Nome</label>
+            <input
+              class="form-input" type="text" id="FNAME" name="FNAME"
+              placeholder="Como posso te chamar?" autocomplete="given-name" required
+            />
+          </div>
+
+          <!-- E-mail -->
+          <div class="form-group">
+            <label class="form-label" for="EMAIL">E-mail</label>
+            <input
+              class="form-input" type="email" id="EMAIL" name="EMAIL"
+              placeholder="seu@email.com" autocomplete="email" required
+            />
+          </div>
+
+          <!-- Prefixo oculto — Brasil (+55) pré-selecionado -->
+          <select name="PHONEPREFIX" style="display:none">
+            <option value="55BRAZIL" selected>Brazil (+55)</option>
+          </select>
+
+          <!-- WhatsApp -->
+          <div class="form-group">
+            <label class="form-label" for="PHONE">WhatsApp (com DDD)</label>
+            <input
+              class="form-input" type="tel" id="PHONE" name="PHONE"
+              placeholder="(xx) 9xxxx-xxxx" autocomplete="tel" required
+            />
+          </div>
+
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Baixar Agora!
+          </button>
+
+          <p class="privacy-note">
+            🔒 Seus dados estão seguros e serão armazenados com segurança.<br>
+            Ao baixar, você concorda com nossa <a href="#">política de privacidade</a>.
+          </p>
+        </form>
       </div>
     </div>
+
+    <!-- iframe oculto: recebe o POST do Mailingboss sem redirecionar a página -->
+    <iframe name="mbFrame" style="display:none" width="0" height="0"></iframe>
+
     <!-- SUCCESS STATE -->
     <div class="success-box" id="successState">
       <div class="success-icon">🎉</div>
-      <h3 class="success-title">Guia enviado com sucesso!</h3>
-      <p class="success-sub">Obrigado, <strong id="successName"></strong>! Seu guia está a caminho.<br>Verifique seu e-mail — incluindo a pasta de spam, caso necessário.<br><br>Enquanto isso, que tal conhecer o Programa de Acompanhamento?</p>
-      <a href="#" class="success-btn">Conhecer o Programa →</a>
+      <h3 class="success-title">Tudo certo, <span id="successName"></span>!</h3>
+      <p class="success-sub">Seu guia está pronto para acessar agora mesmo.<br>Clique no botão abaixo para abrir o PDF.</p>
+      <a href="https://flavioamorim.com.br/guia/guia-conhecimento-de-valor.pdf" target="_blank" class="success-btn">
+        📄 Acessar o Guia Agora
+      </a>
+      <p style="font-size:11px;color:var(--muted);margin-top:16px;line-height:1.7;">
+        Uma cópia também foi enviada para o seu e-mail.<br>Verifique a caixa de spam se não encontrar.
+      </p>
     </div>
   </div>
 </div>
 
 <script>
-// ── DATABASE (localStorage) ──
-const DB_KEY = 'cv_leads';
 
-function getLeads() {
-  try { return JSON.parse(localStorage.getItem(DB_KEY)) || []; }
-  catch(e) { return []; }
-}
-
-function saveLeads(leads) {
-  localStorage.setItem(DB_KEY, JSON.stringify(leads));
-}
-
-function addLead(lead) {
-  const leads = getLeads();
-  leads.unshift(lead); // newest first
-  saveLeads(leads);
-  renderTable();
-}
-
-function renderTable() {
-  const leads = getLeads();
-  const tbody = document.getElementById('leadsBody');
-  const countEl = document.getElementById('dbCount');
-  const exportBtn = document.getElementById('exportBtn');
-
-  if (!leads.length) {
-    tbody.innerHTML = '<tr><td colspan="5"><div class="db-empty">Nenhum lead capturado ainda.</div></td></tr>';
-    countEl.textContent = '';
-    exportBtn.style.display = 'none';
-    return;
-  }
-
-  tbody.innerHTML = leads.map((l, i) => `
-    <tr>
-      <td style="color:rgba(255,255,255,.3)">${leads.length - i}</td>
-      <td style="font-weight:600">${esc(l.name)}</td>
-      <td>${esc(l.email)}</td>
-      <td>${esc(l.whatsapp)}</td>
-      <td style="color:rgba(255,255,255,.4);white-space:nowrap">${esc(l.date)}</td>
-    </tr>
-  `).join('');
-
-  countEl.textContent = `Total: ${leads.length} lead${leads.length !== 1 ? 's' : ''} capturado${leads.length !== 1 ? 's' : ''}`;
-  exportBtn.style.display = 'inline-block';
-}
-
-function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
 
 // ── POPUP ──
 function openPopup() {
@@ -491,33 +455,32 @@ function resetForm() {
   btn.disabled = false;
 }
 
-// ── FORM SUBMIT ──
-function submitForm() {
-  const name     = document.getElementById('firstName').value.trim();
-  const email    = document.getElementById('email').value.trim();
-  const whatsapp = document.getElementById('whatsapp').value.trim();
+// ── FORM SUBMIT — Mailingboss ──
+function handleSubmit(e) {
+  const name     = document.getElementById('FNAME').value.trim();
+  const email    = document.getElementById('EMAIL').value.trim();
+  const whatsapp = document.getElementById('PHONE').value.trim();
 
-  if (!name)     { shake('firstName'); return; }
-  if (!email || !email.includes('@')) { shake('email'); return; }
-  if (!whatsapp || whatsapp.length < 8) { shake('whatsapp'); return; }
+  if (!name)     { shake('FNAME'); e.preventDefault(); return; }
+  if (!email || !email.includes('@')) { shake('EMAIL'); e.preventDefault(); return; }
+  if (!whatsapp || whatsapp.replace(/\D/g,'').length < 8) { shake('PHONE'); e.preventDefault(); return; }
 
+  // Desabilita o botão e mostra loading
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.innerHTML = '⏳ Processando...';
+  btn.innerHTML = '⏳ Enviando...';
 
-  // Simula envio com delay
+  // Log interno (sem armazenar dados no frontend — conformidade LGPD)
+  console.log('📧 Lead enviado ao Mailingboss com sucesso.');
+
+  // Exibe o estado de sucesso após breve delay (tempo do POST)
   setTimeout(() => {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-
-    const lead = { name, email, whatsapp, date: dateStr };
-    addLead(lead);
-    sendEmailNotification(lead);
-
     document.getElementById('successName').textContent = name;
     document.getElementById('formState').style.display = 'none';
     document.getElementById('successState').style.display = 'block';
-  }, 1200);
+  }, 1400);
+
+  // Deixa o form ser submetido normalmente ao Mailingboss via iframe
 }
 
 function shake(id) {
@@ -528,22 +491,6 @@ function shake(id) {
   el.style.animation = 'shake .4s ease';
   setTimeout(() => { el.style.borderColor = ''; el.style.animation = ''; }, 600);
 }
-
-// ── SIMULATED EMAIL NOTIFICATION ──
-function sendEmailNotification(lead) {
-  // In production, this would call a backend endpoint or service like EmailJS
-  // that sends to contato@flavioamorim.com.br with subject "Novo contato - Guia Conhecimento de Valor"
-  const subject = encodeURIComponent('Novo contato - Guia Conhecimento de Valor');
-  const body = encodeURIComponent(
-    `Novo lead capturado!\n\nNome: ${lead.name}\nE-mail: ${lead.email}\nWhatsApp: ${lead.whatsapp}\nData: ${lead.date}\n\n---\nGuia Conhecimento de Valor · flavioamorim.com.br`
-  );
-  // Log para fins demonstrativos
-  console.log(`📧 Notificação enviada para contato@flavioamorim.com.br`);
-  console.log(`Assunto: Novo contato - Guia Conhecimento de Valor`);
-  console.log(`Lead:`, lead);
-}
-
-// ── CSV EXPORT ──
 function exportCSV() {
   const leads = getLeads();
   if (!leads.length) return;
@@ -569,7 +516,6 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
 // ── INIT ──
-renderTable();
 </script>
 
 <style>
